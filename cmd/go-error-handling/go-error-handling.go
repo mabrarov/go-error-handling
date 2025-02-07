@@ -26,7 +26,7 @@ type Resource struct {
 	Id int
 }
 
-func (r Resource) Close() error {
+func (r *Resource) Close() error {
 	_, err := fmt.Printf("Closing %v\n", r)
 	if err != nil {
 		return &CloseError{BasicError{"Close error: " + err.Error()}}
@@ -37,7 +37,7 @@ func (r Resource) Close() error {
 	return nil
 }
 
-func process(resource Resource) (int, error) {
+func process(resource *Resource) (int, error) {
 	_, err := fmt.Printf("Created %v\n", resource)
 	if err != nil {
 		return 0, err
@@ -66,8 +66,8 @@ func work() (result int, errs []error) {
 	}()
 
 	// Create resource and immediately protect it with guard
-	resource := Resource{42}
-	guard = &resource
+	resource := &Resource{42}
+	guard = resource
 
 	// Process / use resource and generate result
 	result, err := process(resource)
