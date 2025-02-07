@@ -37,7 +37,7 @@ func (resource *Resource) Close() error {
 	return nil
 }
 
-func process(resource *Resource) (int, error) {
+func (resource *Resource) process() (int, error) {
 	_, err := fmt.Printf("Created: %v\n", resource)
 	if err != nil {
 		return 0, err
@@ -70,7 +70,7 @@ func work() (result int, errs []error) {
 	guard = &resource
 
 	// Process / use resource and generate result
-	result, err := process(&resource)
+	result, err := resource.process()
 	if err != nil {
 		errs = append(errs, err)
 	}
