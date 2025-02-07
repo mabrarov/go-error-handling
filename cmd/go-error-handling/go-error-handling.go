@@ -6,45 +6,45 @@ import (
 	"os"
 )
 
-type BasicError struct {
-	Description string
+type CloseError struct{}
+
+func (e *CloseError) Error() string {
+	return "Close error"
 }
 
-type CloseError struct {
-	BasicError
-}
+type ProcessError struct{}
 
-type ProcessError struct {
-	BasicError
-}
-
-func (e *BasicError) Error() string {
-	return e.Description
+func (e *ProcessError) Error() string {
+	return "Process error"
 }
 
 type Resource struct {
 	Id int
 }
 
-func (r *Resource) Close() error {
-	_, err := fmt.Printf("Closing %v\n", r)
+func (resource *Resource) String() string {
+	return fmt.Sprintf("{%d}", resource.Id)
+}
+
+func (resource *Resource) Close() error {
+	_, err := fmt.Printf("Closing: %v\n", resource)
 	if err != nil {
-		return &CloseError{BasicError{"Close error: " + err.Error()}}
+		return err
 	}
 	if rand.Intn(2) > 0 {
-		return &CloseError{BasicError{"Random close error"}}
+		return &CloseError{}
 	}
 	return nil
 }
 
 func process(resource *Resource) (int, error) {
-	_, err := fmt.Printf("Created %v\n", resource)
+	_, err := fmt.Printf("Created: %v\n", resource)
 	if err != nil {
 		return 0, err
 	}
 	switch rand.Intn(3) {
 	case 1:
-		return 0, &ProcessError{BasicError{"Random process error"}}
+		return 0, &ProcessError{}
 	case 2:
 		panic("Random panic")
 	default:
@@ -66,11 +66,11 @@ func work() (result int, errs []error) {
 	}()
 
 	// Create resource and immediately protect it with guard
-	resource := &Resource{42}
-	guard = resource
+	resource := Resource{42}
+	guard = &resource
 
 	// Process / use resource and generate result
-	result, err := process(resource)
+	result, err := process(&resource)
 	if err != nil {
 		errs = append(errs, err)
 	}
@@ -95,7 +95,7 @@ func reportErrors(errs []error) {
 
 func main() {
 	result, errs := work()
-	fmt.Printf("Result: %v\n", result)
+	fmt.Printf("Processing result: %v\n", result)
 	if len(errs) > 0 {
 		reportErrors(errs)
 		os.Exit(1)
