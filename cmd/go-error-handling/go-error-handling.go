@@ -18,7 +18,7 @@ type ProcessError struct {
 	BasicError
 }
 
-func (e BasicError) Error() string {
+func (e *BasicError) Error() string {
 	return e.Description
 }
 
@@ -29,10 +29,10 @@ type Resource struct {
 func (r Resource) Close() error {
 	_, err := fmt.Printf("Closing %v\n", r)
 	if err != nil {
-		return CloseError{BasicError{"Close error: " + err.Error()}}
+		return &CloseError{BasicError{"Close error: " + err.Error()}}
 	}
 	if rand.Intn(2) > 0 {
-		return CloseError{BasicError{"Random close error"}}
+		return &CloseError{BasicError{"Random close error"}}
 	}
 	return nil
 }
@@ -44,7 +44,7 @@ func process(resource Resource) (int, error) {
 	}
 	switch rand.Intn(3) {
 	case 1:
-		return 0, ProcessError{BasicError{"Random process error"}}
+		return 0, &ProcessError{BasicError{"Random process error"}}
 	case 2:
 		panic("Random panic")
 	default:
@@ -86,10 +86,10 @@ func work() (result int, errs []error) {
 	return
 }
 
-func report(errs []error) {
+func reportErrors(errs []error) {
 	fmt.Println("Errors happened:")
 	for _, err := range errs {
-		fmt.Println("\t" + err.Error())
+		fmt.Printf("\t%v\n", err)
 	}
 }
 
@@ -97,7 +97,7 @@ func main() {
 	result, errs := work()
 	fmt.Printf("Result: %v\n", result)
 	if len(errs) > 0 {
-		report(errs)
+		reportErrors(errs)
 		os.Exit(1)
 	}
 }
