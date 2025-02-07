@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"math/rand"
 	"os"
 )
@@ -54,7 +55,7 @@ func (resource *Resource) process() (int, error) {
 
 func work() (result int, errs []error) {
 	// Create guard
-	var guard *Resource
+	var guard io.Closer
 	defer func() {
 		if guard == nil {
 			return
