@@ -17,8 +17,9 @@ endif
 .PHONY: all
 all: build
 
-.PHONY: build
-build:
+build: $(OUTPUT)
+
+$(OUTPUT): go.mod cmd/go-error-handling/go-error-handling.go
 	$(GO) build -C cmd/go-error-handling -o "$(GO_BUILD_OUTPUT)"
 
 .PHONY: clean
