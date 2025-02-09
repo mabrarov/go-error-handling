@@ -1,10 +1,11 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"io"
+	"log"
 	"math/rand"
-	"os"
 )
 
 type CloseError struct{}
@@ -53,16 +54,16 @@ func (resource *Resource) process() (int, error) {
 	}
 }
 
-func work() (result int, errs []error) {
+func work() (result int, err error) {
 	// Create guard
 	var guard io.Closer
 	defer func() {
 		if guard == nil {
 			return
 		}
-		err := guard.Close()
-		if err != nil {
-			errs = append(errs, err)
+		closeErr := guard.Close()
+		if closeErr != nil {
+			err = errors.Join(err, closeErr)
 		}
 	}()
 
@@ -71,34 +72,24 @@ func work() (result int, errs []error) {
 	guard = &resource
 
 	// Process / use resource and generate result
-	result, err := resource.process()
-	if err != nil {
-		errs = append(errs, err)
-	}
+	result, err = resource.process()
 
 	// Normal closing of resource with immediate un-protection
-	err = resource.Close()
+	closeErr := resource.Close()
 	guard = nil
 
 	// Return results
-	if err != nil {
-		errs = append(errs, err)
+	if closeErr != nil {
+		err = errors.Join(err, closeErr)
 	}
 	return
 }
 
-func reportErrors(errs []error) {
-	fmt.Println("Errors happened:")
-	for _, err := range errs {
-		fmt.Printf("\t%v\n", err)
-	}
-}
-
 func main() {
-	result, errs := work()
+	log.SetFlags(log.Ldate | log.Ltime | log.Lmicroseconds | log.LUTC | log.Lshortfile | log.Lmsgprefix)
+	result, err := work()
 	fmt.Printf("Processing result: %v\n", result)
-	if len(errs) > 0 {
-		reportErrors(errs)
-		os.Exit(1)
+	if err != nil {
+		log.Fatal(err)
 	}
 }
