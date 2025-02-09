@@ -20,3 +20,7 @@ all: build
 .PHONY: build
 build:
 	$(GO) build -C cmd/go-error-handling -o "$(GO_BUILD_OUTPUT)"
+
+.PHONY: clean
+clean:
+	rm -f "$(OUTPUT)"
