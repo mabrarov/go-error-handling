@@ -2,16 +2,11 @@ GO          ?= go
 PREFIX      ?= $(shell pwd)/.build
 OUTPUT_NAME ?= go-error-handling
 
-ifeq ($(OS),Windows_NT)
-OUTPUT          = $(PREFIX)/$(OUTPUT_NAME).exe
+OUTPUT          = $(PREFIX)/$(OUTPUT_NAME)$(shell go env GOEXE)
+GO_BUILD_OUTPUT = $(OUTPUT)
+
 ifneq ($(shell uname -s | grep -E '^(MSYS|MINGW).*'),)
 GO_BUILD_OUTPUT = $(shell cygpath -w "$(OUTPUT)")
-else
-GO_BUILD_OUTPUT = $(OUTPUT)
-endif
-else
-OUTPUT          = $(PREFIX)/$(OUTPUT_NAME)
-GO_BUILD_OUTPUT = $(OUTPUT)
 endif
 
 .PHONY: all
