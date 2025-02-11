@@ -18,7 +18,7 @@ all: build
 build: $(OUTPUT)
 
 $(OUTPUT): $(SRC)
-	CGO_ENABLED=0 $(GO) build -trimpath -o '$(GO_BUILD_OUTPUT)' ./cmd/go-error-handling
+	CGO_ENABLED=0 '$(GO)' build -trimpath -o '$(GO_BUILD_OUTPUT)' ./cmd/go-error-handling
 
 .PHONY: clean
 clean:
