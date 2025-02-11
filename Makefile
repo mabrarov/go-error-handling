@@ -11,6 +11,8 @@ endif
 
 SRC             := $(shell find . -type f -name '*.go' -print) go.mod
 
+escape           = $(subst ','\'',$(1))
+
 .PHONY: all
 all: build
 
@@ -18,8 +20,8 @@ all: build
 build: $(OUTPUT)
 
 $(OUTPUT): $(SRC)
-	CGO_ENABLED=0 '$(GO)' build -trimpath -o '$(GO_BUILD_OUTPUT)' ./cmd/go-error-handling
+	CGO_ENABLED=0 '$(call escape,$(GO))' build -trimpath -o '$(call escape,$(GO_BUILD_OUTPUT))' ./cmd/go-error-handling
 
 .PHONY: clean
 clean:
-	rm -f '$(OUTPUT)'
+	rm -f '$(call escape,$(OUTPUT))'
