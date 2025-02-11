@@ -1,21 +1,25 @@
-GO          ?= go
-PREFIX      ?= $(shell pwd)/.build
-OUTPUT_NAME ?= go-error-handling
+GO              ?= go
+PREFIX          ?= $(shell pwd)/.build
+BINNAME         ?= go-error-handling
 
-OUTPUT          = $(PREFIX)/$(OUTPUT_NAME)$(shell go env GOEXE)
-GO_BUILD_OUTPUT = $(OUTPUT)
+OUTPUT          := $(PREFIX)/$(BINNAME)$(shell go env GOEXE)
+GO_BUILD_OUTPUT := $(OUTPUT)
 
 ifeq ($(shell uname -s | grep -c -m 1 -E '^(MSYS|MINGW).*'),1)
-GO_BUILD_OUTPUT = $(shell cygpath -w "$(OUTPUT)")
+GO_BUILD_OUTPUT := $(shell cygpath -w "$(OUTPUT)")
 endif
+
+SRC             := $(shell find . -type f -name '*.go' -print) go.mod
 
 .PHONY: all
 all: build
 
 .PHONY: build
-build:
-	$(GO) build -C cmd/go-error-handling -o "$(GO_BUILD_OUTPUT)"
+build: $(OUTPUT)
+
+$(OUTPUT): $(SRC)
+	CGO_ENABLED=0 $(GO) build -trimpath -o '$(GO_BUILD_OUTPUT)' ./cmd/go-error-handling
 
 .PHONY: clean
 clean:
-	rm -f "$(OUTPUT)"
+	rm -f '$(OUTPUT)'
