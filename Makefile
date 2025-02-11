@@ -5,7 +5,7 @@ OUTPUT_NAME ?= go-error-handling
 OUTPUT          = $(PREFIX)/$(OUTPUT_NAME)$(shell go env GOEXE)
 GO_BUILD_OUTPUT = $(OUTPUT)
 
-ifneq ($(shell uname -s | grep -E '^(MSYS|MINGW).*'),)
+ifeq ($(shell uname -s | grep -c -m 1 -E '^(MSYS|MINGW).*'),1)
 GO_BUILD_OUTPUT = $(shell cygpath -w "$(OUTPUT)")
 endif
 
