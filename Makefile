@@ -1,5 +1,6 @@
 GO              ?= go
-PREFIX          ?= $(shell pwd)/.build
+MAKEFILE_DIR    := $(abspath $(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
+PREFIX          ?= $(MAKEFILE_DIR)/.build
 BINNAME         ?= go-error-handling
 
 # https://tensin.name/blog/makefile-escaping.html
@@ -29,7 +30,7 @@ endif
 
 escape           = $(subst ','\'',$(1))
 
-OUTPUT          := $(PREFIX)/$(BINNAME)$(shell go env GOEXE)
+OUTPUT          := $(PREFIX)/$(BINNAME)$(shell '$(call escape,$(GO))' env GOEXE)
 GO_BUILD_OUTPUT := $(OUTPUT)
 
 ifeq ($(shell uname -s | grep -c -m 1 -E '^(MSYS|MINGW).*'),1)
