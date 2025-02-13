@@ -9,17 +9,13 @@ ifeq ($(shell uname -s | grep -c -m 1 -E '^(MSYS|MINGW).*'),1)
 GO_BUILD_OUTPUT := $(shell cygpath -w "$(OUTPUT)")
 endif
 
-SRC             := $(shell find . -type f -name '*.go' -print) go.mod
-
 escape           = $(subst ','\'',$(1))
 
 .PHONY: all
 all: build
 
 .PHONY: build
-build: $(OUTPUT)
-
-$(OUTPUT): $(SRC)
+build:
 	CGO_ENABLED=0 '$(call escape,$(GO))' build -trimpath -o '$(call escape,$(GO_BUILD_OUTPUT))' ./cmd/go-error-handling
 
 .PHONY: clean
