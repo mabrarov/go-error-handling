@@ -27,6 +27,8 @@ else ifeq ($(origin BINNAME),command line)
     override BINNAME := $(value BINNAME)
 endif
 
+escape           = $(subst ','\'',$(1))
+
 OUTPUT          := $(PREFIX)/$(BINNAME)$(shell go env GOEXE)
 GO_BUILD_OUTPUT := $(OUTPUT)
 
@@ -34,14 +36,11 @@ ifeq ($(shell uname -s | grep -c -m 1 -E '^(MSYS|MINGW).*'),1)
 GO_BUILD_OUTPUT := $(shell cygpath -w '$(call escape,$(OUTPUT))')
 endif
 
-escape           = $(subst ','\'',$(1))
-
 .PHONY: all
 all: build
 
 .PHONY: build
 build:
-	@echo '$(call escape,$(GO_BUILD_OUTPUT))'
 	CGO_ENABLED=0 '$(call escape,$(GO))' build -trimpath -o '$(call escape,$(GO_BUILD_OUTPUT))' ./cmd/go-error-handling
 
 .PHONY: clean
