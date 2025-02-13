@@ -37,7 +37,11 @@ all: build
 
 .PHONY: build
 build:
-	CGO_ENABLED=0 '$(call escape,$(GO))' -C '$(call escape,$(MAKEFILE_DIR))' build -trimpath -o '$(call escape,$(OUTPUT))' ./cmd/go-error-handling
+	CGO_ENABLED=0 '$(call escape,$(GO))' build -C '$(call escape,$(MAKEFILE_DIR))' -trimpath -o '$(call escape,$(OUTPUT))' ./cmd/go-error-handling
+
+.PHONY: run
+run:
+	CGO_ENABLED=0 '$(call escape,$(GO))' run -C '$(call escape,$(MAKEFILE_DIR))' ./cmd/go-error-handling
 
 .PHONY: clean
 clean:
