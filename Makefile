@@ -2,7 +2,7 @@ GO              ?= go
 PREFIX          ?= $(shell pwd)/.build
 BINNAME         ?= go-error-handling
 
-OUTPUT          := $(PREFIX)/$(BINNAME)$(shell go env GOEXE)
+OUTPUT          := $(PREFIX)/$(BINNAME)$(shell '$(GO)' env GOEXE)
 GO_BUILD_OUTPUT := $(OUTPUT)
 
 ifeq ($(shell uname -s | grep -c -m 1 -E '^(MSYS|MINGW).*'),1)
