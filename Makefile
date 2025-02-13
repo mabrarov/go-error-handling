@@ -1,5 +1,6 @@
 GO              ?= go
-PREFIX          ?= $(shell pwd)/.build
+MAKEFILE_DIR    := $(abspath $(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
+PREFIX          ?= $(MAKEFILE_DIR)/.build
 BINNAME         ?= go-error-handling
 
 OUTPUT          := $(PREFIX)/$(BINNAME)$(shell '$(GO)' env GOEXE)
@@ -14,7 +15,7 @@ all: build
 
 .PHONY: build
 build:
-	CGO_ENABLED=0 '$(GO)' build -trimpath -o '$(GO_BUILD_OUTPUT)' ./cmd/go-error-handling
+	CGO_ENABLED=0 '$(GO)' -C '$(MAKEFILE_DIR)' build -trimpath -o '$(GO_BUILD_OUTPUT)' ./cmd/go-error-handling
 
 .PHONY: clean
 clean:
