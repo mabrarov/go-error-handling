@@ -12,6 +12,10 @@ all: build
 build:
 	CGO_ENABLED=0 '$(GO)' build -C '$(MAKEFILE_DIR)' -trimpath -o '$(OUTPUT)' ./cmd/go-error-handling
 
+.PHONY: run
+run:
+	CGO_ENABLED=0 '$(GO)' run -C '$(MAKEFILE_DIR)' ./cmd/go-error-handling
+
 .PHONY: clean
 clean:
 	rm -f '$(OUTPUT)'
