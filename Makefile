@@ -2,11 +2,36 @@ GO              ?= go
 PREFIX          ?= $(shell pwd)/.build
 BINNAME         ?= go-error-handling
 
+# https://tensin.name/blog/makefile-escaping.html
+ifeq ($(origin GO),environment)
+    GO := $(value GO)
+else ifeq ($(origin GO),environment override)
+    GO := $(value GO)
+else ifeq ($(origin GO),command line)
+    override GO := $(value GO)
+endif
+
+ifeq ($(origin PREFIX),environment)
+    PREFIX := $(value PREFIX)
+else ifeq ($(origin PREFIX),environment override)
+    PREFIX := $(value PREFIX)
+else ifeq ($(origin PREFIX),command line)
+    override PREFIX := $(value PREFIX)
+endif
+
+ifeq ($(origin BINNAME),environment)
+    BINNAME := $(value BINNAME)
+else ifeq ($(origin BINNAME),environment override)
+    BINNAME := $(value BINNAME)
+else ifeq ($(origin BINNAME),command line)
+    override BINNAME := $(value BINNAME)
+endif
+
 OUTPUT          := $(PREFIX)/$(BINNAME)$(shell go env GOEXE)
 GO_BUILD_OUTPUT := $(OUTPUT)
 
 ifeq ($(shell uname -s | grep -c -m 1 -E '^(MSYS|MINGW).*'),1)
-GO_BUILD_OUTPUT := $(shell cygpath -w "$(OUTPUT)")
+GO_BUILD_OUTPUT := $(shell cygpath -w '$(call escape,$(OUTPUT))')
 endif
 
 escape           = $(subst ','\'',$(1))
@@ -16,6 +41,7 @@ all: build
 
 .PHONY: build
 build:
+	@echo '$(call escape,$(GO_BUILD_OUTPUT))'
 	CGO_ENABLED=0 '$(call escape,$(GO))' build -trimpath -o '$(call escape,$(GO_BUILD_OUTPUT))' ./cmd/go-error-handling
 
 .PHONY: clean
