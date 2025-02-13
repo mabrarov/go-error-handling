@@ -6,7 +6,7 @@ OUTPUT          := $(PREFIX)/$(BINNAME)$(shell go env GOEXE)
 GO_BUILD_OUTPUT := $(OUTPUT)
 
 ifeq ($(shell uname -s | grep -c -m 1 -E '^(MSYS|MINGW).*'),1)
-GO_BUILD_OUTPUT := $(shell cygpath -w "$(OUTPUT)")
+GO_BUILD_OUTPUT := $(shell cygpath -w '$(OUTPUT)')
 endif
 
 .PHONY: all
