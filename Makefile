@@ -1,3 +1,11 @@
+# https://clarkgrubb.com/makefile-style-guide
+MAKEFLAGS     += --warn-undefined-variables
+SHELL         := bash
+.SHELLFLAGS   := -eu -o pipefail -c
+.DEFAULT_GOAL := all
+.DELETE_ON_ERROR:
+.SUFFIXES:
+
 GO           ?= go
 MAKEFILE_DIR := $(abspath $(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 PREFIX       ?= $(MAKEFILE_DIR)/.build
