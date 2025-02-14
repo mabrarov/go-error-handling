@@ -4,21 +4,19 @@ PREFIX       ?= $(MAKEFILE_DIR)/.build
 BINNAME      ?= go-error-handling
 
 # https://tensin.name/blog/makefile-escaping.html
-ifeq ($(origin GO),command line)
-    override GO := $(value GO)
-else
-    GO := $(value GO)
-endif
-ifeq ($(origin PREFIX),command line)
-    override PREFIX := $(value PREFIX)
-else
-    PREFIX := $(value PREFIX)
-endif
-ifeq ($(origin BINNAME),command line)
-    override BINNAME := $(value BINNAME)
-else
-    BINNAME := $(value BINNAME)
-endif
+define noexpand
+    ifeq ($$(origin $(1)),environment)
+        $(1) := $$(value $(1))
+    else ifeq ($$(origin $(1)),environment override)
+        $(1) := $$(value $(1))
+    else ifeq ($$(origin $(1)),command line)
+        override $(1) := $$(value $(1))
+    endif
+endef
+
+$(eval $(call noexpand,GO))
+$(eval $(call noexpand,PREFIX))
+$(eval $(call noexpand,BINNAME))
 
 escape        = $(subst ','\'',$(1))
 
