@@ -64,7 +64,7 @@ func (r *resource) process() (int, error) {
 	case 1:
 		return 0, &processError{}
 	case 2:
-		panic("Random panic")
+		panic("random panic")
 	default:
 		return r.id, nil
 	}
@@ -96,9 +96,9 @@ func (r *resource) String() string {
 }
 
 func (e *closeError) Error() string {
-	return "Close error"
+	return "close error"
 }
 
 func (e *processError) Error() string {
-	return "Process error"
+	return "process error"
 }
