@@ -44,4 +44,4 @@ run:
 
 .PHONY: clean
 clean:
-	rm -f $(call squote,$(OUTPUT))
+	$(RM) $(call squote,$(OUTPUT))
